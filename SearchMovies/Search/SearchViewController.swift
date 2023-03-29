@@ -9,7 +9,11 @@ import UIKit
 
 class SearchViewController: UIViewController, UISearchBarDelegate {
     
+    let networkManager = NetworkManager()
     let searchController = UISearchController(searchResultsController: nil)
+    var arrayMovie = [Track]()
+    private var timer: Timer?
+    
     
     let mainTableView: UITableView = {
         let tv = UITableView()
@@ -25,11 +29,6 @@ class SearchViewController: UIViewController, UISearchBarDelegate {
         setupSearchBar()
         setConstraints()
         tableViewSettings()
-        
-        //        let vc = AuthenticationViewController()
-        //        vc.modalPresentationStyle = .fullScreen
-        //        self.present(vc, animated: true)
-        
     }
     
     
@@ -41,15 +40,7 @@ class SearchViewController: UIViewController, UISearchBarDelegate {
     }
     
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        //          let vc = AuthenticationViewController()
-        //          vc.modalPresentationStyle = .fullScreen
-        //          self.present(vc, animated: true)
-    }
-    
-    
-    func setConstraints() {
+    private func setConstraints() {
         NSLayoutConstraint.activate([
             mainTableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
             mainTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -65,6 +56,19 @@ class SearchViewController: UIViewController, UISearchBarDelegate {
         mainTableView.delegate = self
         mainTableView.dataSource = self
     }
-    
 }
 
+
+//MARK: - SearchBarDelegate
+extension SearchViewController {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { [weak self] (_) in
+            print(searchText)
+            self?.networkManager.fetchTracks(searchText: searchText, complition: { movie in
+                self?.arrayMovie = movie?.results ?? []
+                self?.mainTableView.reloadData()
+            })
+        })
+    }
+}

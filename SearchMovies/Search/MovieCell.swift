@@ -78,7 +78,7 @@ class MovieCell: UITableViewCell {
             imageMovie.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 1/1.2),
             nameLabel.leadingAnchor.constraint(equalTo: imageMovie.trailingAnchor, constant: 10),
             nameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
-            nameLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 1/2),
+            nameLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 1/1.7),
             genreLabel.leadingAnchor.constraint(equalTo: imageMovie.trailingAnchor, constant: 10),
             genreLabel.bottomAnchor.constraint(equalTo: yearLabel.topAnchor, constant: -7),
             genreLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 1/2),

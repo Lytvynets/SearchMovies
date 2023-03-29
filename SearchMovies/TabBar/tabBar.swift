@@ -13,7 +13,6 @@ class TabBarVC: UITabBarController{
     override func viewDidLoad() {
         super.viewDidLoad()
         tabBar.tintColor = .black
-        // tabBar.unselectedItemTintColor = .red
         tabBar.backgroundColor = #colorLiteral(red: 0.9373161197, green: 0.937415421, blue: 0.9404873252, alpha: 1)
         setup()
     }
@@ -25,13 +24,6 @@ class TabBarVC: UITabBarController{
             createNavController(rootVC: SelectedViewController(), title: "Selected", image: UIImage(systemName: "bookmark.fill")!),
             createNavController(rootVC: ProfileViewController(), title: "Prifile", image: UIImage(systemName: "person.fill")!),
         ]
-    }
-    
-    
-    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        //  tabBar.tintColor = SetColors.currentColor.labelsColor
-        //  self.tabBar.backgroundColor = .systemGray
-        //  self.tabBar.barTintColor = SetColors.currentColor.backgroundCustomViewColor
     }
     
     

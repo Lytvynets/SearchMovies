@@ -44,7 +44,6 @@ class ProfileViewController: UIViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Log out", for: .normal)
-        //button.backgroundColor = .red
         button.setTitleColor(.black, for: .normal)
         return button
     }()
@@ -58,10 +57,14 @@ class ProfileViewController: UIViewController {
         view.addSubview(secondNameLabel)
         view.addSubview(logOutButton)
         setConstraints()
-        
-//        networkManager.getRequest { movie in
-//            print("\(movie)")
-//        }
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let vc = AuthenticationViewController()
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
     }
     
     
@@ -80,5 +83,4 @@ class ProfileViewController: UIViewController {
             logOutButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
         ])
     }
-    
 }

@@ -10,6 +10,8 @@ import UIKit
 
 class DetailViewController: UIViewController {
     
+    var shareUrlMovie = ""
+    
     lazy var movieImage: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
@@ -21,16 +23,17 @@ class DetailViewController: UIViewController {
     lazy var nameMovieLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Gill Sans", size: 25)
+        label.font = UIFont(name: "Gill Sans", size: 20)
         label.textColor = .black
         label.text = "Something"
+        label.numberOfLines = 0
         return label
     }()
     
     lazy var yearMovieLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Gill Sans", size: 20)
+        label.font = UIFont(name: "Gill Sans", size: 15)
         label.textColor = .black
         label.text = "1998"
         return label
@@ -39,16 +42,16 @@ class DetailViewController: UIViewController {
     lazy var genreLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Gill Sans", size: 20)
+        label.font = UIFont(name: "Gill Sans", size: 18)
         label.textColor = .black
         label.text = "Horror"
         return label
     }()
     
-    lazy var DescriptionLabel: UILabel = {
+    lazy var descriptionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Gill Sans", size: 20)
+        label.font = UIFont(name: "Gill Sans", size: 17)
         label.textColor = .black
         label.numberOfLines = 0
         label.text = "Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror"
@@ -63,13 +66,11 @@ class DetailViewController: UIViewController {
         view.addSubview(nameMovieLabel)
         view.addSubview(yearMovieLabel)
         view.addSubview(genreLabel)
-        view.addSubview(DescriptionLabel)
+        view.addSubview(descriptionLabel)
         movieImage.backgroundColor = .red
         view.backgroundColor = .white
         setConstraints()
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Share", style: .plain, target: self, action: #selector(share(sender:)))
-        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share(sender:)))
     }
     
     
@@ -78,38 +79,35 @@ class DetailViewController: UIViewController {
         NSLayoutConstraint.activate([
             movieImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
             movieImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
-            movieImage.widthAnchor.constraint(equalToConstant: 200),
-            movieImage.heightAnchor.constraint(equalToConstant: 200),
+            movieImage.widthAnchor.constraint(equalToConstant: 100),
+            movieImage.heightAnchor.constraint(equalToConstant: 150),
             nameMovieLabel.leadingAnchor.constraint(equalTo: movieImage.trailingAnchor, constant: 20),
             nameMovieLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
+            nameMovieLabel.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1/1.7),
             genreLabel.leadingAnchor.constraint(equalTo: movieImage.trailingAnchor, constant: 20),
-            genreLabel.topAnchor.constraint(equalTo: nameMovieLabel.bottomAnchor, constant: 20),
+            genreLabel.bottomAnchor.constraint(equalTo: yearMovieLabel.topAnchor, constant: -20),
             yearMovieLabel.leadingAnchor.constraint(equalTo: movieImage.trailingAnchor, constant: 20),
-            yearMovieLabel.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 10),
-            DescriptionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            DescriptionLabel.topAnchor.constraint(equalTo: movieImage.bottomAnchor, constant: 15),
-            DescriptionLabel.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1/1.1),
-            //  DescriptionLabel.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1/2)
+            yearMovieLabel.bottomAnchor.constraint(equalTo: movieImage.bottomAnchor, constant: -5),
+            descriptionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            descriptionLabel.topAnchor.constraint(equalTo: movieImage.bottomAnchor, constant: 15),
+            descriptionLabel.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1/1.1),
         ])
     }
     
     
+    //MARK: - Actions
     @objc func share(sender:UIView){
         UIGraphicsBeginImageContext(view.frame.size)
         view.layer.render(in: UIGraphicsGetCurrentContext()!)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        let textToShare = "Check out my app"
-        
-        if let myWebsite = URL(string: "http://itunes.apple.com/app/idXXXXXXXXX") {//Enter link to your app here
-            let objectsToShare = [textToShare, myWebsite, image ?? #imageLiteral(resourceName: "app-logo")] as [Any]
+        if let myWebsite = URL(string: shareUrlMovie) {
+            let objectsToShare = [myWebsite, image ?? #imageLiteral(resourceName: "app-logo")] as [Any]
             let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
             
             //Excluded Activities
             activityVC.excludedActivityTypes = [UIActivity.ActivityType.airDrop, UIActivity.ActivityType.addToReadingList]
-            //
-            
             activityVC.popoverPresentationController?.sourceView = sender
             self.present(activityVC, animated: true, completion: nil)
         }
