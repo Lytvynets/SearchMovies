@@ -67,7 +67,7 @@ class DetailViewController: UIViewController {
         view.addSubview(yearMovieLabel)
         view.addSubview(genreLabel)
         view.addSubview(descriptionLabel)
-        movieImage.backgroundColor = .red
+        movieImage.backgroundColor = .gray
         view.backgroundColor = .white
         setConstraints()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share(sender:)))
@@ -96,7 +96,7 @@ class DetailViewController: UIViewController {
     
     
     //MARK: - Actions
-    @objc func share(sender:UIView){
+    @objc func share(sender: UIView){
         UIGraphicsBeginImageContext(view.frame.size)
         view.layer.render(in: UIGraphicsGetCurrentContext()!)
         let image = UIGraphicsGetImageFromCurrentImageContext()
@@ -105,13 +105,9 @@ class DetailViewController: UIViewController {
         if let myWebsite = URL(string: shareUrlMovie) {
             let objectsToShare = [myWebsite, image ?? #imageLiteral(resourceName: "app-logo")] as [Any]
             let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-            
-            //Excluded Activities
             activityVC.excludedActivityTypes = [UIActivity.ActivityType.airDrop, UIActivity.ActivityType.addToReadingList]
             activityVC.popoverPresentationController?.sourceView = sender
             self.present(activityVC, animated: true, completion: nil)
         }
     }
-    
-    
 }

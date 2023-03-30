@@ -15,6 +15,7 @@ class MovieCell: UITableViewCell {
         image.translatesAutoresizingMaskIntoConstraints = false
         image.backgroundColor = .red
         image.layer.cornerRadius = 5
+        image.clipsToBounds = true
         return image
     }()
     

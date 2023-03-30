@@ -9,6 +9,7 @@ import UIKit
 import FirebaseCore
 import FirebaseAuth
 import FirebaseAnalytics
+import FirebaseDatabase
 
 class SearchViewController: UIViewController, UISearchBarDelegate {
     

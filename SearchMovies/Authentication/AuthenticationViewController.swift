@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 import FirebaseDatabase
 import FirebaseStorage
+import FirebaseFirestore
 
 class AuthenticationViewController: UIViewController {
     
@@ -105,7 +106,6 @@ class AuthenticationViewController: UIViewController {
         view.addSubview(nameTextField)
         view.addSubview(secondNameTextField)
         view.addSubview(registrationLabel)
-        
         buttonLayout()
         textFieldsLayout()
         changeState(state: currentState)
@@ -152,6 +152,7 @@ class AuthenticationViewController: UIViewController {
     }
     
     
+    //MARK: - Authentication
     func authentication() {
         let name = nameTextField.text!
         let secondName = secondNameTextField.text!
@@ -166,7 +167,7 @@ class AuthenticationViewController: UIViewController {
                         if let userResult = userResult {
                             print(userResult.user.uid)
                             let ref = Database.database().reference().child("users")
-                            ref.child(userResult.user.uid).onDisconnectUpdateChildValues(["name": name ,"email": email])
+                            ref.child(userResult.user.uid).setValue(["name": name ,"email": email, "secondName": secondName])
                             self.dismiss(animated: true, completion: nil)
                         }
                     }
@@ -179,24 +180,16 @@ class AuthenticationViewController: UIViewController {
                 Auth.auth().signIn(withEmail: email, password: password) { result, error in
                     print("RESULT: \(String(describing: result?.user.uid))")
                     if error == nil {
-                        
-                        
-                        
                         DispatchQueue.main.async {
                             self.dismiss(animated: true, completion: nil)
                         }
-                        
-                        print("Dismis")
                     }
                 }
             }else{
                 showAlert()
-                // self.dismiss(animated: true, completion: nil)
-                print("Alert")
             }
         }
     }
-    
     
     
     func showAlert(){
@@ -237,20 +230,28 @@ class AuthenticationViewController: UIViewController {
     
     
     @objc func okButtonAction() {
-      //  self.dismiss(animated: true)
         authentication()
-        
     }
     
 }
 
 
 extension AuthenticationViewController: UITextFieldDelegate {
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-       // authentication()
+        // authentication()
         print("textFieldShouldReturn")
         return true
     }
-    
+}
+
+
+//MARK: Work with USER DATA
+struct User {
+    let name: String
+    let secondName: String
+}
+
+
+class DataManager {
+    static let shared = DataManager()
 }

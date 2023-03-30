@@ -19,16 +19,18 @@
 	<key>STORAGE_BUCKET</key>
 	<string>search-movies-659c4.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:266349167469:ios:fb14c66b9f625c3c471064</string>
+	<key>DATABASE_URL</key>
+	<string>https://search-movies-659c4-default-rtdb.europe-west1.firebasedatabase.app/</string>
 </dict>
 </plist>

@@ -10,10 +10,12 @@ import UIKit
 import FirebaseCore
 import FirebaseAuth
 import FirebaseAnalytics
+import FirebaseDatabase
 
 class ProfileViewController: UIViewController {
     
     let networkManager = NetworkManager()
+    let ref = Database.database().reference()
     
     lazy var profileImage: UIImageView = {
         let image = UIImageView()
@@ -73,18 +75,28 @@ class ProfileViewController: UIViewController {
         }
     }
     
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-//        Auth.auth().addStateDidChangeListener { auth, user in
-//            if user == nil {
-//                self.showAuthentication()
-//            }
-//        }
-        
-        //        let vc = AuthenticationViewController()
-        //        vc.modalPresentationStyle = .fullScreen
-        //        self.present(vc, animated: true)
+        test()
+    }
+    
+    
+    func test() {
+        let userID = Auth.auth().currentUser?.uid
+        guard let id = userID else { return }
+        let ref = Database.database().reference().child("users")
+        ref.child(id).observeSingleEvent(of: .value, with: { snapshot in
+            let value = snapshot.value as? NSDictionary
+            let username = value?["name"] as? String ?? "nil"
+            let secondName = value?["secondName"] as? String ?? "nil"
+            let user = User(name: username, secondName: secondName)
+            self.nameLabel.text = user.name
+            self.secondNameLabel.text = user.secondName
+            print(username)
+        }) { error in
+            print(error.localizedDescription)
+        }
     }
     
     
@@ -103,7 +115,7 @@ class ProfileViewController: UIViewController {
             profileImage.widthAnchor.constraint(equalToConstant: 100),
             profileImage.heightAnchor.constraint(equalToConstant: 100),
             nameLabel.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 10),
-            nameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+            nameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             secondNameLabel.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor, constant: 7),
             secondNameLabel.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor),
             logOutButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
