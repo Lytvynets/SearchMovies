@@ -12,4 +12,4 @@ Now you'll need to build the dependencies.
 ## Third-party Libraries
 * [Realm](https://realm.io/)
 * [Firebase](https://firebase.google.com/)
-* [alamofire](https://github.com/Alamofire/Alamofire)
+* [Alamofire](https://github.com/Alamofire/Alamofire)
