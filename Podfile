@@ -6,6 +6,12 @@ target 'SearchMovies' do
   use_frameworks!
 
   pod 'Alamofire'
+  pod 'FirebaseAnalytics'
+  pod 'FirebaseAuth'
+  pod 'FirebaseFirestore'
+  pod 'Firebase/Core'
+  pod 'Firebase/Database'
+  pod 'Firebase/Storage'
 
   # Pods for SearchMovies
 

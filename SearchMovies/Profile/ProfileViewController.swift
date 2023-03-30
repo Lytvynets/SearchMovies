@@ -7,6 +7,9 @@
 
 import Foundation
 import UIKit
+import FirebaseCore
+import FirebaseAuth
+import FirebaseAnalytics
 
 class ProfileViewController: UIViewController {
     
@@ -41,10 +44,11 @@ class ProfileViewController: UIViewController {
     
     
     lazy var logOutButton: UIButton = {
-        let button = UIButton()
+        let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Log out", for: .normal)
         button.setTitleColor(.black, for: .normal)
+        button.addTarget(self, action: #selector(logOutAction), for: .touchUpInside)
         return button
     }()
     
@@ -59,9 +63,32 @@ class ProfileViewController: UIViewController {
         setConstraints()
     }
     
+    @objc private func logOutAction() {
+        print("Log out")
+        do{
+            try Auth.auth().signOut()
+            self.showAuthentication()
+        }catch{
+            print(error)
+        }
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+//        Auth.auth().addStateDidChangeListener { auth, user in
+//            if user == nil {
+//                self.showAuthentication()
+//            }
+//        }
+        
+        //        let vc = AuthenticationViewController()
+        //        vc.modalPresentationStyle = .fullScreen
+        //        self.present(vc, animated: true)
+    }
+    
+    
+    private func showAuthentication() {
         let vc = AuthenticationViewController()
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)

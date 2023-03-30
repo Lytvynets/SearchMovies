@@ -7,6 +7,9 @@
 
 import Foundation
 import UIKit
+import Firebase
+import FirebaseDatabase
+import FirebaseStorage
 
 class AuthenticationViewController: UIViewController {
     
@@ -149,6 +152,62 @@ class AuthenticationViewController: UIViewController {
     }
     
     
+    func authentication() {
+        let name = nameTextField.text!
+        let secondName = secondNameTextField.text!
+        let password = passwordTextField.text!
+        let email = eMailTextField.text!
+        
+        switch currentState {
+        case .registration:
+            if !name.isEmpty && !password.isEmpty && !email.isEmpty && !secondName.isEmpty {
+                Auth.auth().createUser(withEmail: email, password: password) { userResult, error in
+                    if error == nil {
+                        if let userResult = userResult {
+                            print(userResult.user.uid)
+                            let ref = Database.database().reference().child("users")
+                            ref.child(userResult.user.uid).onDisconnectUpdateChildValues(["name": name ,"email": email])
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                    }
+                }
+            }else{
+                showAlert()
+            }
+        case .login:
+            if !password.isEmpty && !email.isEmpty {
+                Auth.auth().signIn(withEmail: email, password: password) { result, error in
+                    print("RESULT: \(String(describing: result?.user.uid))")
+                    if error == nil {
+                        
+                        
+                        
+                        DispatchQueue.main.async {
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                        
+                        print("Dismis")
+                    }
+                }
+            }else{
+                showAlert()
+                // self.dismiss(animated: true, completion: nil)
+                print("Alert")
+            }
+        }
+    }
+    
+    
+    
+    func showAlert(){
+        let alert = UIAlertController(title: "Помилка", message: "Заповніть поля", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ок", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    
+    
+    
     //MARK: - State view
     private func changeState(state: State) {
         switch state {
@@ -178,8 +237,20 @@ class AuthenticationViewController: UIViewController {
     
     
     @objc func okButtonAction() {
-        self.dismiss(animated: true)
+      //  self.dismiss(animated: true)
+        authentication()
         
+    }
+    
+}
+
+
+extension AuthenticationViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+       // authentication()
+        print("textFieldShouldReturn")
+        return true
     }
     
 }

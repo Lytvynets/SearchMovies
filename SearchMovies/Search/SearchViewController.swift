@@ -6,6 +6,9 @@
 //
 
 import UIKit
+import FirebaseCore
+import FirebaseAuth
+import FirebaseAnalytics
 
 class SearchViewController: UIViewController, UISearchBarDelegate {
     
@@ -31,6 +34,22 @@ class SearchViewController: UIViewController, UISearchBarDelegate {
         tableViewSettings()
     }
     
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        Auth.auth().addStateDidChangeListener { auth, user in
+            if user == nil {
+                self.showAuthentication()
+            }
+        }
+    }
+    
+    
+    private func showAuthentication() {
+        let vc = AuthenticationViewController()
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
+    }
     
     private func setupSearchBar(){
         navigationItem.searchController = searchController
