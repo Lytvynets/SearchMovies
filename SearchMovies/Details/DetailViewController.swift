@@ -12,50 +12,18 @@ class DetailViewController: UIViewController {
     
     var shareUrlMovie = ""
     
+    lazy var nameMovieLabel = LabelBuilder(fontSize: 20, startText: "Something", color: .black)
+    lazy var yearMovieLabel = LabelBuilder(fontSize: 15, startText: "2004", color: .black)
+    lazy var genreLabel = LabelBuilder(fontSize: 18, startText: "Horror", color: .black)
+    lazy var descriptionLabel = LabelBuilder(fontSize: 17, startText: "DescriptionLabel", color: .black)
+    
+    
     lazy var movieImage: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.backgroundColor = .red
         image.layer.cornerRadius = 5
         return image
-    }()
-    
-    lazy var nameMovieLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Gill Sans", size: 20)
-        label.textColor = .black
-        label.text = "Something"
-        label.numberOfLines = 0
-        return label
-    }()
-    
-    lazy var yearMovieLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Gill Sans", size: 15)
-        label.textColor = .black
-        label.text = "1998"
-        return label
-    }()
-    
-    lazy var genreLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Gill Sans", size: 18)
-        label.textColor = .black
-        label.text = "Horror"
-        return label
-    }()
-    
-    lazy var descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Gill Sans", size: 17)
-        label.textColor = .black
-        label.numberOfLines = 0
-        label.text = "Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror Horror"
-        return label
     }()
     
     
@@ -71,6 +39,9 @@ class DetailViewController: UIViewController {
         view.backgroundColor = .white
         setConstraints()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share(sender:)))
+        fontSettings()
+        descriptionLabel.numberOfLines = 0
+        nameMovieLabel.numberOfLines = 0
     }
     
     
@@ -93,6 +64,16 @@ class DetailViewController: UIViewController {
             descriptionLabel.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1/1.1),
         ])
     }
+    
+    
+    //Font setting
+    private func fontSettings() {
+        nameMovieLabel.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.023)
+        yearMovieLabel.font = UIFont(name: "Gill Sans", size: view.frame.height * 0.017)
+        genreLabel.font = UIFont(name: "Gill Sans", size: view.frame.height * 0.021)
+        descriptionLabel.font = UIFont(name: "Gill Sans", size: view.frame.height * 0.02)
+    }
+    
     
     
     //MARK: - Actions

@@ -22,7 +22,7 @@ class TabBarVC: UITabBarController{
         viewControllers = [
             createNavController(rootVC: SearchViewController(), title: "Search", image: UIImage(systemName: "magnifyingglass")!),
             createNavController(rootVC: SelectedViewController(), title: "Selected", image: UIImage(systemName: "bookmark.fill")!),
-            createNavController(rootVC: ProfileViewController(), title: "Prifile", image: UIImage(systemName: "person.fill")!),
+            createNavController(rootVC: ProfileViewController(), title: "Profile", image: UIImage(systemName: "person.fill")!),
         ]
     }
     
@@ -30,7 +30,6 @@ class TabBarVC: UITabBarController{
     func createNavController (rootVC: UIViewController, title: String, image: UIImage) -> UIViewController {
         let navController = UINavigationController(rootViewController: rootVC)
         navController.tabBarItem.image = image
-        //  navController.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: SetColors.currentColor.labelsColor]
         navController.navigationBar.prefersLargeTitles = true
         rootVC.navigationItem.title = title
         return navController

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		182D65F429D778B5000FADD9 /* LabelBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182D65F329D778B5000FADD9 /* LabelBuilder.swift */; };
 		1842D0A429D435820084B509 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 1842D0A329D435820084B509 /* .gitignore */; };
 		1849E3E629D2E4D300EDDCE5 /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1849E3E529D2E4D300EDDCE5 /* MovieCell.swift */; };
 		1849E3E929D2E7D500EDDCE5 /* SearchTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1849E3E829D2E7D500EDDCE5 /* SearchTableView.swift */; };
@@ -30,6 +31,7 @@
 
 /* Begin PBXFileReference section */
 		0CEBA346985A67B0C02D017B /* Pods-SearchMovies.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SearchMovies.release.xcconfig"; path = "Target Support Files/Pods-SearchMovies/Pods-SearchMovies.release.xcconfig"; sourceTree = "<group>"; };
+		182D65F329D778B5000FADD9 /* LabelBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelBuilder.swift; sourceTree = "<group>"; };
 		1842D0A329D435820084B509 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		1849E3E529D2E4D300EDDCE5 /* MovieCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
 		1849E3E829D2E7D500EDDCE5 /* SearchTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableView.swift; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 			children = (
 				1896846629D1F06900DCEB30 /* NetworkManager.swift */,
 				18B04DE129D4A9C90029BE59 /* Model.swift */,
+				182D65F329D778B5000FADD9 /* LabelBuilder.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -312,6 +315,7 @@
 				1849E3E929D2E7D500EDDCE5 /* SearchTableView.swift in Sources */,
 				1884160429D1D0C6000A2A15 /* AuthenticationViewController.swift in Sources */,
 				189B546329D342060077010B /* DetailViewController.swift in Sources */,
+				182D65F429D778B5000FADD9 /* LabelBuilder.swift in Sources */,
 				1849E3E629D2E4D300EDDCE5 /* MovieCell.swift in Sources */,
 				188415F429D1C9F7000A2A15 /* SearchViewController.swift in Sources */,
 				18B04DE229D4A9C90029BE59 /* Model.swift in Sources */,

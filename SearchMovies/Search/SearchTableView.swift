@@ -21,10 +21,16 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         cell.imageMovie.backgroundColor = .gray
         let array = arrayMovie[indexPath.row]
         let imageUrl = URL(string: array.artworkUrl100 ?? "")!
+      
         cell.imageMovie.load(url: imageUrl)
         cell.nameLabel.text = array.trackName
         cell.genreLabel.text = array.primaryGenreName
         cell.yearLabel.text = array.releaseDate
+        
+        cell.nameLabel.font = UIFont(name: "Gill Sans", size: view.frame.height * 0.023)
+        cell.genreLabel.font = UIFont(name: "Gill Sans", size: view.frame.height * 0.017)
+        cell.yearLabel.font = UIFont(name: "Gill Sans", size: view.frame.height * 0.017)
+        
         return cell
     }
     
@@ -43,7 +49,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         self.present(navCon, animated: true)
     }
     
-    
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return view.frame.height / 10
     }

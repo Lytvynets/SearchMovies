@@ -19,6 +19,9 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     let ref = Database.database().reference()
     let picker = UIImagePickerController()
     
+    lazy var nameLabel = LabelBuilder(fontSize: 20, startText: "Name", color: .black)
+    lazy var secondNameLabel = LabelBuilder(fontSize: 20, startText: "Second name", color: .black)
+    
     lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView()
         indicator.translatesAutoresizingMaskIntoConstraints = false
@@ -39,26 +42,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }()
     
     
-    lazy var nameLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Gill Sans", size: 20)
-        label.textColor = .black
-        label.text = "Nmae"
-        return label
-    }()
-    
-    
-    lazy var secondNameLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Gill Sans", size: 20)
-        label.text = "Second name"
-        label.textColor = .black
-        return label
-    }()
-    
-    
     lazy var logOutButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -76,7 +59,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         button.backgroundColor = .systemBlue
         button.setImage(UIImage(systemName: "plus"), for: .normal)
         button.tintColor = .white
-        button.layer.cornerRadius = 15
+        // button.layer.cornerRadius = 15
         button.layer.borderWidth = 2.5
         button.layer.borderColor = UIColor.white.cgColor
         button.addTarget(self, action: #selector(addPhotoButtonAction), for: .touchUpInside)
@@ -104,9 +87,9 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         view.addSubview(addPhotoButton)
         view.addSubview(savePhotoButton)
         view.addSubview(activityIndicator)
-       
         
         setConstraints()
+        fontSettings()
         //  testImage()
         self.picker.delegate = self
         self.picker.allowsEditing = true
@@ -186,12 +169,12 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         ref.child(id).observeSingleEvent(of: .value, with: { snapshot in
             self.activityIndicator.isHidden = false
             self.activityIndicator.startAnimating()
-          
+            
             let value = snapshot.value as? NSDictionary
             let username = value?["name"] as? String ?? "nil"
             let secondName = value?["secondName"] as? String ?? "nil"
             let useImage = value?["imageName"] as? String ?? "nil"
-           
+            
             let user = User(name: username, secondName: secondName)
             
             self.getImg(name: useImage) { img in
@@ -211,26 +194,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     
-    //    func testImage() {
-    //        let userID = Auth.auth().currentUser?.uid
-    //        guard let id = userID else { return }
-    //        let ref = Database.database().reference().child("users")
-    //        ref.child(id).observeSingleEvent(of: .value, with: { snapshot in
-    //            let value = snapshot.value as? NSDictionary
-    //            let username = value?["imageName"] as? String ?? "nil"
-    //            self.getImg(name: username) { img in
-    //                DispatchQueue.main.async {
-    //                    self.profileImage.image = img
-    //                }
-    //            }
-    //
-    //            print(username)
-    //        }) { error in
-    //            print(error.localizedDescription)
-    //        }
-    //    }
-    
-    
     func getImg(name: String, completion: @escaping (UIImage) -> Void){
         let storageRef = Storage.storage()
         let reference = storageRef.reference()
@@ -245,6 +208,15 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     
+    func fontSettings() {
+        nameLabel.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.025)
+        secondNameLabel.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.025)
+        logOutButton.titleLabel?.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.021)
+        addPhotoButton.titleLabel?.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.015)
+        savePhotoButton.titleLabel?.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.021)
+    }
+    
+    
     private func showAuthentication() {
         let vc = AuthenticationViewController()
         vc.modalPresentationStyle = .fullScreen
@@ -252,20 +224,25 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     
+    override func viewDidLayoutSubviews() {
+        profileImage.layer.cornerRadius = profileImage.frame.height / 2
+        addPhotoButton.layer.cornerRadius = addPhotoButton.frame.height / 2
+    }
+    
+    
     //MARK: - Layout
     private func setConstraints() {
-        profileImage.layer.cornerRadius = 50
         NSLayoutConstraint.activate([
             profileImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             profileImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
-            profileImage.widthAnchor.constraint(equalToConstant: 100),
-            profileImage.heightAnchor.constraint(equalToConstant: 100),
+            profileImage.widthAnchor.constraint(equalToConstant: view.frame.height * 0.12),
+            profileImage.heightAnchor.constraint(equalToConstant: view.frame.height * 0.12),
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -50),
             addPhotoButton.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor, constant: 0),
             addPhotoButton.bottomAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 0),
-            addPhotoButton.widthAnchor.constraint(equalToConstant: 30),
-            addPhotoButton.heightAnchor.constraint(equalToConstant: 30),
+            addPhotoButton.widthAnchor.constraint(equalToConstant: view.frame.height * 0.035),
+            addPhotoButton.heightAnchor.constraint(equalToConstant: view.frame.height * 0.035),
             nameLabel.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 10),
             nameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             secondNameLabel.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor, constant: 7),
