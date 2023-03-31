@@ -20,7 +20,7 @@ class TabBarVC: UITabBarController{
     
     func setup(){
         viewControllers = [
-            createNavController(rootVC: SearchViewController(), title: "Search", image: UIImage(systemName: "magazine.fill")!),
+            createNavController(rootVC: SearchViewController(), title: "Search", image: UIImage(systemName: "magnifyingglass")!),
             createNavController(rootVC: SelectedViewController(), title: "Selected", image: UIImage(systemName: "bookmark.fill")!),
             createNavController(rootVC: ProfileViewController(), title: "Prifile", image: UIImage(systemName: "person.fill")!),
         ]
