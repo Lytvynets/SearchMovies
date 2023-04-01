@@ -7,7 +7,9 @@ You'll need [CocoaPods](http://cocoapods.org) installed for of our dependencies.
 Now you'll need to build the dependencies.
     
     $ pod install
+ launch 
  
+    SearchMovies.xcworkspace
  
 ## Third-party Libraries
 * [Realm](https://realm.io/)
