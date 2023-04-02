@@ -10,29 +10,34 @@ import FirebaseCore
 import FirebaseAuth
 import FirebaseAnalytics
 import FirebaseDatabase
+import RealmSwift
 
 class SearchViewController: UIViewController, UISearchBarDelegate {
     
+    let dataManager = DataManager()
     let networkManager = NetworkManager()
     let searchController = UISearchController(searchResultsController: nil)
     var arrayMovie = [Track]()
-    private var timer: Timer?
+    var timer: Timer?
     
     
-    let mainTableView: UITableView = {
+    let SearchTableView: UITableView = {
         let tv = UITableView()
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
     }()
     
     
+    //MARK: - life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(mainTableView)
+        view.addSubview(SearchTableView)
         view.backgroundColor = .white
         setupSearchBar()
         setConstraints()
         tableViewSettings()
+        let realm = try! Realm()
+        dataManager.historyMoviesArray = realm.objects(History.self)
     }
     
     
@@ -52,6 +57,7 @@ class SearchViewController: UIViewController, UISearchBarDelegate {
         self.present(vc, animated: true)
     }
     
+    
     private func setupSearchBar(){
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -60,35 +66,20 @@ class SearchViewController: UIViewController, UISearchBarDelegate {
     }
     
     
+    private func tableViewSettings() {
+        SearchTableView.register(MovieCell.self, forCellReuseIdentifier: "TableViewCell")
+        SearchTableView.layer.cornerRadius = 15
+        SearchTableView.delegate = self
+        SearchTableView.dataSource = self
+    }
+    
+    
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            mainTableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-            mainTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            mainTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            mainTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            SearchTableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+            SearchTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            SearchTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            SearchTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
-    }
-    
-    
-    private func tableViewSettings() {
-        mainTableView.register(MovieCell.self, forCellReuseIdentifier: "TableViewCell")
-        mainTableView.layer.cornerRadius = 15
-        mainTableView.delegate = self
-        mainTableView.dataSource = self
-    }
-}
-
-
-//MARK: - SearchBarDelegate
-extension SearchViewController {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { [weak self] (_) in
-            print(searchText)
-            self?.networkManager.fetchTracks(searchText: searchText, complition: { movie in
-                self?.arrayMovie = movie?.results ?? []
-                self?.mainTableView.reloadData()
-            })
-        })
     }
 }

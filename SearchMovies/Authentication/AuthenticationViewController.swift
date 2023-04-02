@@ -12,7 +12,7 @@ import FirebaseDatabase
 import FirebaseStorage
 import FirebaseFirestore
 
-class AuthenticationViewController: UIViewController {
+class AuthenticationViewController: UIViewController, UITextFieldDelegate {
     
     enum State {
         case registration
@@ -21,11 +21,11 @@ class AuthenticationViewController: UIViewController {
     
     private var currentState: State = .registration
     
-    lazy var registrationLabel = LabelBuilder(fontSize: 30, startText: "Registration", color: .black)
-    lazy var haveAccountLabel = LabelBuilder(fontSize: 18, startText: "Already have an account?", color: .black)
+    private lazy var registrationLabel = LabelBuilder(fontSize: 30, startText: "Registration", color: .black)
+    private lazy var haveAccountLabel = LabelBuilder(fontSize: 18, startText: "Already have an account?", color: .black)
     
     
-    lazy var textFieldsStackView: UIStackView = {
+    private lazy var textFieldsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.alignment = .center
@@ -45,6 +45,7 @@ class AuthenticationViewController: UIViewController {
         textField.layer.cornerRadius = 15
         return textField
     }()
+    
     
     private lazy var secondNameTextField: UITextField = {
         let textField = UITextField()
@@ -74,6 +75,7 @@ class AuthenticationViewController: UIViewController {
         textField.placeholder = "Password"
         textField.backgroundColor = #colorLiteral(red: 0.9373161197, green: 0.937415421, blue: 0.9404873252, alpha: 1)
         textField.textAlignment = .center
+        textField.isSecureTextEntry = true
         textField.layer.cornerRadius = 15
         return textField
     }()
@@ -123,7 +125,7 @@ class AuthenticationViewController: UIViewController {
     
     
     //MARK: - Authentication
-    func authentication() {
+    private func authentication() {
         let name = nameTextField.text!
         let secondName = secondNameTextField.text!
         let password = passwordTextField.text!
@@ -161,11 +163,17 @@ class AuthenticationViewController: UIViewController {
     }
     
     
-    func showAlert(){
+    private func showAlert(){
         let alert = UIAlertController(title: "Помилка", message: "Заповніть поля", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ок", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
+    
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
     
     
     //MARK: - State view
@@ -204,7 +212,7 @@ class AuthenticationViewController: UIViewController {
     
     
     //MARK: - Font settings
-    func fontSettings() {
+    private func fontSettings() {
         registrationLabel.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.035)
         haveAccountLabel.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.021)
         signInButton.titleLabel?.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.02)
@@ -246,13 +254,4 @@ class AuthenticationViewController: UIViewController {
             okButton.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1/18),
         ])
     }
-}
-
-
-
-
-//MARK: Work with USER DATA
-struct User {
-    let name: String
-    let secondName: String
 }

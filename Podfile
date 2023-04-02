@@ -12,6 +12,7 @@ target 'SearchMovies' do
   pod 'Firebase/Core'
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
+  pod 'RealmSwift'  
 
   # Pods for SearchMovies
 

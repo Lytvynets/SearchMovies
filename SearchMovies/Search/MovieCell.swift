@@ -10,6 +10,15 @@ import UIKit
 
 class MovieCell: UITableViewCell {
     
+    let dataManager = DataManager()
+    
+    var name: String = ""
+    var genre: String = ""
+    var year: String = ""
+    var longDescription: String = ""
+    var imageUrl: String = ""
+    var previewUrl: String = ""
+    
     lazy var imageMovie: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
@@ -51,6 +60,7 @@ class MovieCell: UITableViewCell {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "plus"), for: .normal)
+        button.addTarget(self, action: #selector(addToSelected), for: .touchUpInside)
         return button
     }()
     
@@ -71,6 +81,7 @@ class MovieCell: UITableViewCell {
     }
     
     
+    //MARK: - Layout
     private func setConstraints() {
         NSLayoutConstraint.activate([
             imageMovie.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -90,4 +101,18 @@ class MovieCell: UITableViewCell {
             addToSelectedButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
         ])
     }
+    
+    
+    //MARK: - Actions
+    @objc func addToSelected(){
+        addToSelectedButton.isHidden = true
+        addToSelectedrealm(name: name, genre: genre, descriptionMovie: longDescription, urlString: previewUrl, date: year, imageUrl: imageUrl)
+    }
+    
+    
+    func addToSelectedrealm(name: String, genre: String, descriptionMovie: String, urlString: String, date: String, imageUrl: String){
+        let selected = Selected(name: name, genre: genre, descriptionMovie: descriptionMovie, urlString: urlString, date: date, imageUrl: imageUrl)
+        dataManager.saveToRealm(debtor: selected)
+    }
+    
 }

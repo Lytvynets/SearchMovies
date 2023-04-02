@@ -12,15 +12,27 @@ import FirebaseAuth
 import FirebaseAnalytics
 import FirebaseDatabase
 import FirebaseStorage
+import RealmSwift
 
 class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate  {
     
+    let dataManager = DataManager()
     let networkManager = NetworkManager()
     let ref = Database.database().reference()
     let picker = UIImagePickerController()
     
     lazy var nameLabel = LabelBuilder(fontSize: 20, startText: "Name", color: .black)
     lazy var secondNameLabel = LabelBuilder(fontSize: 20, startText: "Second name", color: .black)
+    lazy var imageSavedLabel = LabelBuilder(fontSize: 15, startText: "Image Saved!", color: .black)
+    lazy var historyLabel = LabelBuilder(fontSize: 15, startText: "Search history", color: .black)
+    
+    
+    let mainTableView: UITableView = {
+        let tv = UITableView()
+        tv.translatesAutoresizingMaskIntoConstraints = false
+        return tv
+    }()
+    
     
     lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView()
@@ -56,11 +68,9 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(.systemRed, for: .normal)
-        button.backgroundColor = .systemBlue
-        button.setImage(UIImage(systemName: "plus"), for: .normal)
-        button.tintColor = .white
-        // button.layer.cornerRadius = 15
-        button.layer.borderWidth = 2.5
+        button.backgroundColor = .white
+        button.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
+        button.layer.borderWidth = 2
         button.layer.borderColor = UIColor.white.cgColor
         button.addTarget(self, action: #selector(addPhotoButtonAction), for: .touchUpInside)
         return button
@@ -87,12 +97,26 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         view.addSubview(addPhotoButton)
         view.addSubview(savePhotoButton)
         view.addSubview(activityIndicator)
-        
+        view.addSubview(imageSavedLabel)
+        view.addSubview(mainTableView)
+        view.addSubview(historyLabel)
+        imageSavedLabel.alpha = 0
+        historyLabel.backgroundColor = .systemGray6
+        historyLabel.textAlignment = .center
         setConstraints()
         fontSettings()
-        //  testImage()
+        tableViewSettings()
+        let realm = try! Realm()
+        dataManager.historyMoviesArray = realm.objects(History.self)
         self.picker.delegate = self
         self.picker.allowsEditing = true
+    }
+    
+    
+    private func tableViewSettings() {
+        mainTableView.register(HistoryCell.self, forCellReuseIdentifier: "HistoryCell")
+        mainTableView.delegate = self
+        mainTableView.dataSource = self
     }
     
     
@@ -112,10 +136,23 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         guard let id = Auth.auth().currentUser?.uid else { return }
         guard let image = profileImage.image?.imageAsset?.value(forKey: "assetName") else { return }
         let riversRef = storageRef.child("Images /\(image).jpg")
-        // Upload the file to the path "images/rivers.jpg"
         let ref = Database.database().reference().child("users")
+        self.activityIndicator.isHidden = false
+        self.activityIndicator.startAnimating()
+        
         ref.child(id).updateChildValues(["imageName": "\(image).jpg"])
         riversRef.putData((img?.pngData())!, metadata: nil) { (metadata, error) in
+            
+            
+            self.activityIndicator.isHidden = true
+            self.activityIndicator.stopAnimating()
+            UIView.animate(withDuration: 2.0) {
+                self.imageSavedLabel.alpha = 1
+                UIView.animate(withDuration: 5.0) {
+                    self.imageSavedLabel.alpha = 0
+                }
+            }
+            
             guard metadata != nil else {
                 print("Error UPLOAD DDDDAAAATTTAAAAA \(String(describing: error))")
                 return
@@ -156,8 +193,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        mainTableView.reloadData()
         test()
-        // testImage()
     }
     
     
@@ -174,9 +211,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
             let username = value?["name"] as? String ?? "nil"
             let secondName = value?["secondName"] as? String ?? "nil"
             let useImage = value?["imageName"] as? String ?? "nil"
-            
-            let user = User(name: username, secondName: secondName)
-            
+            self.nameLabel.text = username
+            self.secondNameLabel.text = secondName
             self.getImg(name: useImage) { img in
                 DispatchQueue.main.async {
                     self.profileImage.image = img
@@ -185,8 +221,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
                 }
             }
             
-            self.nameLabel.text = user.name
-            self.secondNameLabel.text = user.secondName
             print(username)
         }) { error in
             print(error.localizedDescription)
@@ -209,6 +243,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     
     func fontSettings() {
+        imageSavedLabel.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.02)
+        historyLabel.font = UIFont(name: "Apple Symbols", size: view.frame.height * 0.025)
         nameLabel.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.025)
         secondNameLabel.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.025)
         logOutButton.titleLabel?.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.021)
@@ -232,13 +268,24 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     //MARK: - Layout
     private func setConstraints() {
+        imageSavedLabel.textColor = .systemGreen
         NSLayoutConstraint.activate([
+            historyLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 25),
+            historyLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            historyLabel.widthAnchor.constraint(equalTo: view.widthAnchor),
+            historyLabel.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1/20),
+            mainTableView.topAnchor.constraint(equalTo: historyLabel.bottomAnchor, constant: 5),
+            mainTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 15),
+            mainTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15),
+            mainTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
             profileImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             profileImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
             profileImage.widthAnchor.constraint(equalToConstant: view.frame.height * 0.12),
             profileImage.heightAnchor.constraint(equalToConstant: view.frame.height * 0.12),
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -50),
+            activityIndicator.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            imageSavedLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageSavedLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             addPhotoButton.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor, constant: 0),
             addPhotoButton.bottomAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 0),
             addPhotoButton.widthAnchor.constraint(equalToConstant: view.frame.height * 0.035),
