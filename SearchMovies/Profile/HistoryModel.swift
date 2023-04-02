@@ -11,11 +11,11 @@ import Foundation
 class History: Object {
     
     @objc dynamic var name = ""
-    @objc dynamic var genre = ""
+    @objc dynamic var date = ""
     
-    convenience init(name: String, genre: String) {
+    convenience init(name: String, date: String) {
         self.init()
         self.name = name
-        self.genre = genre
+        self.date = date
     }
 }

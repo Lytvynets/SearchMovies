@@ -21,7 +21,7 @@ class SearchViewController: UIViewController, UISearchBarDelegate {
     var timer: Timer?
     
     
-    let SearchTableView: UITableView = {
+    lazy var SearchTableView: UITableView = {
         let tv = UITableView()
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv

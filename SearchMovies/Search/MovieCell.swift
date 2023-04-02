@@ -19,6 +19,11 @@ class MovieCell: UITableViewCell {
     var imageUrl: String = ""
     var previewUrl: String = ""
     
+    lazy var nameLabel = LabelBuilder(fontSize: 20, startText: "Name", color: .black)
+    lazy var genreLabel = LabelBuilder(fontSize: 15, startText: "Genre", color: .gray)
+    lazy var yearLabel = LabelBuilder(fontSize: 15, startText: "Year", color: .gray)
+    
+    
     lazy var imageMovie: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
@@ -26,33 +31,6 @@ class MovieCell: UITableViewCell {
         image.layer.cornerRadius = 5
         image.clipsToBounds = true
         return image
-    }()
-    
-    
-    lazy var nameLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Gill Sans", size: 20)
-        label.textColor = .black
-        return label
-    }()
-    
-    
-    lazy var genreLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Gill Sans", size: 15)
-        label.textColor = .gray
-        return label
-    }()
-    
-    
-    lazy var yearLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Gill Sans", size: 15)
-        label.textColor = .gray
-        return label
     }()
     
     
@@ -92,7 +70,7 @@ class MovieCell: UITableViewCell {
             nameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
             nameLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 1/1.7),
             genreLabel.leadingAnchor.constraint(equalTo: imageMovie.trailingAnchor, constant: 10),
-            genreLabel.bottomAnchor.constraint(equalTo: yearLabel.topAnchor, constant: -7),
+            genreLabel.bottomAnchor.constraint(equalTo: yearLabel.topAnchor, constant: -5),
             genreLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 1/2),
             yearLabel.leadingAnchor.constraint(equalTo: imageMovie.trailingAnchor, constant: 10),
             yearLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
@@ -112,7 +90,6 @@ class MovieCell: UITableViewCell {
     
     func addToSelectedrealm(name: String, genre: String, descriptionMovie: String, urlString: String, date: String, imageUrl: String){
         let selected = Selected(name: name, genre: genre, descriptionMovie: descriptionMovie, urlString: urlString, date: date, imageUrl: imageUrl)
-        dataManager.saveToRealm(debtor: selected)
+        dataManager.saveToRealm(object: selected)
     }
-    
 }

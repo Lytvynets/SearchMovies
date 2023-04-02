@@ -21,27 +21,26 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     let ref = Database.database().reference()
     let picker = UIImagePickerController()
     
-    lazy var nameLabel = LabelBuilder(fontSize: 20, startText: "Name", color: .black)
-    lazy var secondNameLabel = LabelBuilder(fontSize: 20, startText: "Second name", color: .black)
-    lazy var imageSavedLabel = LabelBuilder(fontSize: 15, startText: "Image Saved!", color: .black)
-    lazy var historyLabel = LabelBuilder(fontSize: 15, startText: "Search history", color: .black)
+    private lazy var nameLabel = LabelBuilder(fontSize: 20, startText: "Name", color: .black)
+    private lazy var secondNameLabel = LabelBuilder(fontSize: 20, startText: "Second name", color: .black)
+    private lazy var imageSavedLabel = LabelBuilder(fontSize: 15, startText: "Image Saved!", color: .black)
+    private lazy var historyLabel = LabelBuilder(fontSize: 15, startText: "Search history", color: .black)
     
-    
-    let mainTableView: UITableView = {
+    private lazy var mainTableView: UITableView = {
         let tv = UITableView()
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
     }()
     
     
-    lazy var activityIndicator: UIActivityIndicatorView = {
+    private lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView()
         indicator.translatesAutoresizingMaskIntoConstraints = false
         indicator.color = .black
         return indicator
     }()
     
-    lazy var profileImage: UIImageView = {
+    private lazy var profileImage: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.backgroundColor = .lightGray
@@ -54,7 +53,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }()
     
     
-    lazy var logOutButton: UIButton = {
+    private lazy var logOutButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Log out", for: .normal)
@@ -64,7 +63,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }()
     
     
-    lazy var addPhotoButton: UIButton = {
+    private lazy var addPhotoButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(.systemRed, for: .normal)
@@ -77,7 +76,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }()
     
     
-    lazy var savePhotoButton: UIButton = {
+    private lazy var savePhotoButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Save photo", for: .normal)
@@ -87,6 +86,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }()
     
     
+    //MARK: Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -100,9 +100,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         view.addSubview(imageSavedLabel)
         view.addSubview(mainTableView)
         view.addSubview(historyLabel)
-        imageSavedLabel.alpha = 0
-        historyLabel.backgroundColor = .systemGray6
-        historyLabel.textAlignment = .center
+        labelSettings()
         setConstraints()
         fontSettings()
         tableViewSettings()
@@ -113,24 +111,28 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     
-    private func tableViewSettings() {
-        mainTableView.register(HistoryCell.self, forCellReuseIdentifier: "HistoryCell")
-        mainTableView.delegate = self
-        mainTableView.dataSource = self
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        mainTableView.reloadData()
+        getPersonalData()
     }
     
     
-    //Adding a profile photo
+    override func viewDidLayoutSubviews() {
+        profileImage.layer.cornerRadius = profileImage.frame.height / 2
+        addPhotoButton.layer.cornerRadius = addPhotoButton.frame.height / 2
+    }
+    
+    
+    //MARK: - Adding a profile photo
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let originImage = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
         self.profileImage.image = originImage
-        guard let image = profileImage.image?.imageAsset?.value(forKey: "assetName") else { return }
-        print("NAME: \(image)")
         self.picker.dismiss(animated: true, completion: nil)
     }
     
     
-    func addImgData() {
+    private func addImgData() {
         let img = profileImage.image
         let storageRef = Storage.storage().reference()
         guard let id = Auth.auth().currentUser?.uid else { return }
@@ -139,11 +141,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         let ref = Database.database().reference().child("users")
         self.activityIndicator.isHidden = false
         self.activityIndicator.startAnimating()
-        
         ref.child(id).updateChildValues(["imageName": "\(image).jpg"])
         riversRef.putData((img?.pngData())!, metadata: nil) { (metadata, error) in
-            
-            
             self.activityIndicator.isHidden = true
             self.activityIndicator.stopAnimating()
             UIView.animate(withDuration: 2.0) {
@@ -152,25 +151,54 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
                     self.imageSavedLabel.alpha = 0
                 }
             }
-            
-            guard metadata != nil else {
-                print("Error UPLOAD DDDDAAAATTTAAAAA \(String(describing: error))")
-                return
-            }
-            // You can also access to download URL after upload.
-            riversRef.downloadURL { (url, error) in
-                guard url != nil else {
-                    print("Image url \(String(describing: url))")
-                    return
-                }
-            }
         }
     }
     
     
+    //MARK: - Get User data
+    private func getPersonalData() {
+        let userID = Auth.auth().currentUser?.uid
+        guard let id = userID else { return }
+        let ref = Database.database().reference().child("users")
+        ref.child(id).observeSingleEvent(of: .value, with: { snapshot in
+            self.activityIndicator.isHidden = false
+            self.activityIndicator.startAnimating()
+            let value = snapshot.value as? NSDictionary
+            let username = value?["name"] as? String ?? "nil"
+            let secondName = value?["secondName"] as? String ?? "nil"
+            let useImage = value?["imageName"] as? String ?? "nil"
+            self.nameLabel.text = username
+            self.secondNameLabel.text = secondName
+            self.getImage(name: useImage) { img in
+                DispatchQueue.main.async {
+                    self.profileImage.image = img
+                    self.activityIndicator.isHidden = true
+                    self.activityIndicator.stopAnimating()
+                }
+            }
+        }) { error in
+            print(error.localizedDescription)
+        }
+    }
+    
+    
+    private func getImage(name: String, completion: @escaping (UIImage) -> Void){
+        let storageRef = Storage.storage()
+        let reference = storageRef.reference()
+        let refPath = reference.child("Images /")
+        var image = UIImage(systemName: "photo.circle")
+        let fileRef = refPath.child(name)
+        fileRef.getData(maxSize: 4288*2848) { data, error in
+            guard error == nil else {completion(image!); return }
+            image = UIImage(data: data!)!
+            completion(image!)
+        }
+    }
+    
+    
+    
     //MARK: - Actions
     @objc private func logOutAction() {
-        print("Log out")
         do{
             try Auth.auth().signOut()
             self.showAuthentication()
@@ -191,58 +219,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        mainTableView.reloadData()
-        test()
-    }
-    
-    
-    func test() {
-        let userID = Auth.auth().currentUser?.uid
-        guard let id = userID else { return }
-        let ref = Database.database().reference().child("users")
-        
-        ref.child(id).observeSingleEvent(of: .value, with: { snapshot in
-            self.activityIndicator.isHidden = false
-            self.activityIndicator.startAnimating()
-            
-            let value = snapshot.value as? NSDictionary
-            let username = value?["name"] as? String ?? "nil"
-            let secondName = value?["secondName"] as? String ?? "nil"
-            let useImage = value?["imageName"] as? String ?? "nil"
-            self.nameLabel.text = username
-            self.secondNameLabel.text = secondName
-            self.getImg(name: useImage) { img in
-                DispatchQueue.main.async {
-                    self.profileImage.image = img
-                    self.activityIndicator.isHidden = true
-                    self.activityIndicator.stopAnimating()
-                }
-            }
-            
-            print(username)
-        }) { error in
-            print(error.localizedDescription)
-        }
-    }
-    
-    
-    func getImg(name: String, completion: @escaping (UIImage) -> Void){
-        let storageRef = Storage.storage()
-        let reference = storageRef.reference()
-        let refPath = reference.child("Images /")
-        var image = UIImage(systemName: "person.fill")
-        let fileRef = refPath.child(name)
-        fileRef.getData(maxSize: 4288*2848) { data, error in
-            guard error == nil else {completion(image!); return }
-            image = UIImage(data: data!)!
-            completion(image!)
-        }
-    }
-    
-    
-    func fontSettings() {
+    //MARK: - Some settings
+    private func fontSettings() {
         imageSavedLabel.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.02)
         historyLabel.font = UIFont(name: "Apple Symbols", size: view.frame.height * 0.025)
         nameLabel.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.025)
@@ -253,16 +231,24 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     
+    private func labelSettings() {
+        imageSavedLabel.alpha = 0
+        historyLabel.backgroundColor = .systemGray6
+        historyLabel.textAlignment = .center
+    }
+    
+    
+    private func tableViewSettings() {
+        mainTableView.register(HistoryCell.self, forCellReuseIdentifier: "HistoryCell")
+        mainTableView.delegate = self
+        mainTableView.dataSource = self
+    }
+    
+    
     private func showAuthentication() {
         let vc = AuthenticationViewController()
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
-    }
-    
-    
-    override func viewDidLayoutSubviews() {
-        profileImage.layer.cornerRadius = profileImage.frame.height / 2
-        addPhotoButton.layer.cornerRadius = addPhotoButton.frame.height / 2
     }
     
     

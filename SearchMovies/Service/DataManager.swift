@@ -15,32 +15,31 @@ class DataManager {
     var historyMoviesArray: Results<History>!
     
     
-    func saveToRealm(debtor: Selected){
+    func saveToRealm(object: Selected){
         try! realm.write{
-            realm.add(debtor)
+            realm.add(object)
         }
     }
     
     
-    
-    func saveToRealmHistory(debtor: History){
+    func saveToRealmHistory(object: History){
         try! realm.write{
-            realm.add(debtor)
+            realm.add(object)
         }
     }
     
     
-    func deleteFromRealmHistory(debtor: History, tableView: UITableView){
+    func deleteFromRealmHistory(object: History, tableView: UITableView){
         try! realm.write{
-            realm.delete(debtor)
+            realm.delete(object)
             tableView.reloadData()
         }
     }
     
     
-    func deleteFromRealm(debtor: Selected, tableView: UITableView){
+    func deleteFromRealm(object: Selected, tableView: UITableView){
         try! realm.write{
-            realm.delete(debtor)
+            realm.delete(object)
             tableView.reloadData()
         }
     }

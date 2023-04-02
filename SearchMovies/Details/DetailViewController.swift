@@ -58,7 +58,7 @@ class DetailViewController: UIViewController {
             nameMovieLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
             nameMovieLabel.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1/1.7),
             genreLabel.leadingAnchor.constraint(equalTo: movieImage.trailingAnchor, constant: 20),
-            genreLabel.bottomAnchor.constraint(equalTo: yearMovieLabel.topAnchor, constant: -20),
+            genreLabel.bottomAnchor.constraint(equalTo: yearMovieLabel.topAnchor, constant: -12),
             yearMovieLabel.leadingAnchor.constraint(equalTo: movieImage.trailingAnchor, constant: 20),
             yearMovieLabel.bottomAnchor.constraint(equalTo: movieImage.bottomAnchor, constant: -5),
             descriptionLabel.topAnchor.constraint(equalTo: movieImage.bottomAnchor, constant: 15),
@@ -72,10 +72,10 @@ class DetailViewController: UIViewController {
     
     //Font setting
     private func fontSettings() {
-        nameMovieLabel.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.023)
-        yearMovieLabel.font = UIFont(name: "Gill Sans", size: view.frame.height * 0.017)
-        genreLabel.font = UIFont(name: "Gill Sans", size: view.frame.height * 0.021)
-        descriptionLabel.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.023)
+        nameMovieLabel.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.024)
+        yearMovieLabel.font = UIFont(name: "Gill Sans", size: view.frame.height * 0.018)
+        genreLabel.font = UIFont(name: "Gill Sans", size: view.frame.height * 0.022)
+        descriptionLabel.font = UIFont(name: "Futura Medium", size: view.frame.height * 0.024)
         descriptionText.font = UIFont(name: "Gill Sans", size: view.frame.height * 0.021)
     }
     

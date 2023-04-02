@@ -13,7 +13,7 @@ class SelectedViewController: UIViewController {
     
     let dataManager = DataManager()
     
-    let mainTableView: UITableView = {
+    private lazy var mainTableView: UITableView = {
         let tv = UITableView()
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv

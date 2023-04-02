@@ -53,7 +53,7 @@ extension SelectedViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         guard editingStyle == .delete else { return }
         let debtors = dataManager.selectedMoviesArray[indexPath.row]
-        dataManager.deleteFromRealm(debtor: debtors, tableView: tableView)
+        dataManager.deleteFromRealm(object: debtors, tableView: tableView)
     }
     
     

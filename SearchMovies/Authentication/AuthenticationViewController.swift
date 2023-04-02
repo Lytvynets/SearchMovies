@@ -20,7 +20,6 @@ class AuthenticationViewController: UIViewController, UITextFieldDelegate {
     }
     
     private var currentState: State = .registration
-    
     private lazy var registrationLabel = LabelBuilder(fontSize: 30, startText: "Registration", color: .black)
     private lazy var haveAccountLabel = LabelBuilder(fontSize: 18, startText: "Already have an account?", color: .black)
     
@@ -141,10 +140,12 @@ class AuthenticationViewController: UIViewController, UITextFieldDelegate {
                             ref.child(userResult.user.uid).setValue(["name": name ,"email": email, "secondName": secondName])
                             self.dismiss(animated: true, completion: nil)
                         }
+                    }else{
+                        self.showAlert("Incorrect data")
                     }
                 }
             }else{
-                showAlert()
+                showAlert("Fill in the fields")
             }
         case .login:
             if !password.isEmpty && !email.isEmpty {
@@ -154,17 +155,19 @@ class AuthenticationViewController: UIViewController, UITextFieldDelegate {
                         DispatchQueue.main.async {
                             self.dismiss(animated: true, completion: nil)
                         }
+                    }else {
+                        self.showAlert("Invalid email or password")
                     }
                 }
             }else{
-                showAlert()
+                showAlert("Fill in the fields")
             }
         }
     }
     
     
-    private func showAlert(){
-        let alert = UIAlertController(title: "Помилка", message: "Заповніть поля", preferredStyle: .alert)
+    private func showAlert(_ errorDiscription: String){
+        let alert = UIAlertController(title: "Error", message: "\(errorDiscription)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ок", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }

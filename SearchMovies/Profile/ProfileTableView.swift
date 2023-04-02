@@ -20,7 +20,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HistoryCell", for: indexPath) as! HistoryCell
         let array = dataManager.historyMoviesArray[indexPath.row]
         cell.nameLabel.text = array.name
-        cell.dateLabel.text = array.genre
+        cell.dateLabel.text = array.date
         cell.selectionStyle = .none
         cell.nameLabel.font = UIFont(name: "Gill Sans", size: view.frame.height * 0.017)
         cell.dateLabel.font = UIFont(name: "Gill Sans", size: view.frame.height * 0.017)
@@ -32,7 +32,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         guard editingStyle == .delete else { return }
         let debtors = dataManager.historyMoviesArray[indexPath.row]
-        dataManager.deleteFromRealmHistory(debtor: debtors, tableView: tableView)
+        dataManager.deleteFromRealmHistory(object: debtors, tableView: tableView)
     }
     
     

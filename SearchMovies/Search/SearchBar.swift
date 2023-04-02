@@ -22,8 +22,9 @@ extension SearchViewController {
             self?.networkManager.fetchTracks(searchText: searchText, complition: { movie in
                 self?.arrayMovie = movie?.results ?? []
                 DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                    let history = History(name: searchText, genre: dateTime)
-                    self?.dataManager.saveToRealmHistory(debtor: history)
+                    guard searchText != "" else { return }
+                    let history = History(name: searchText, date: dateTime)
+                    self?.dataManager.saveToRealmHistory(object: history)
                 }
                 self?.SearchTableView.reloadData()
             })

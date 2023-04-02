@@ -12,24 +12,8 @@ class HistoryCell: UITableViewCell {
     
     let dataManager = DataManager()
     
-    lazy var nameLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Gill Sans", size: 20)
-        label.textColor = .black
-        label.textAlignment = .left
-        return label
-    }()
-    
-    
-    lazy var dateLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "Gill Sans", size: 15)
-        label.textAlignment = .right
-        label.textColor = .gray
-        return label
-    }()
+    lazy var nameLabel = LabelBuilder(fontSize: 20, startText: "Name", color: .black)
+    lazy var dateLabel = LabelBuilder(fontSize: 15, startText: "Date", color: .gray)
     
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -50,9 +34,9 @@ class HistoryCell: UITableViewCell {
             nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             nameLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 1/2.5),
-            dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 0),
             dateLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            dateLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 1/2.5),
+            dateLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 1/3),
         ])
     }
 }
